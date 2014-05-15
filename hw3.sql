@@ -124,8 +124,19 @@ committee chairmen
 
 /* Put your SQL for Q9 here */
 
-SELECT st.statecode, COUNT(*) as sc_count FROM committees cm, states st, senators se
-WHERE se.statecode = st.statecode AND cm.chairman = se.name GROUP BY st.statecode ORDER BY sc_count DESC;
+/*gives answer to the question by combining the two queries below*/ 
+SELECT statecode FROM (SELECT st.statecode, COUNT(*) as cc_count FROM committees cm, states st, senators se
+WHERE se.statecode = st.statecode AND cm.chairman = se.name GROUP BY st.statecode) as m
+WHERE cc_count = (SELECT MAX(cc_count) FROM (SELECT st.statecode, COUNT(*) as cc_count FROM committees cm, states st, senators se
+WHERE se.statecode = st.statecode AND cm.chairman = se.name GROUP BY st.statecode) as n);
+
+/*gives max number of commitee chairman from any state*/
+SELECT MAX(cc_count) FROM (SELECT st.statecode, COUNT(*) as cc_count FROM committees cm, states st, senators se
+WHERE se.statecode = st.statecode AND cm.chairman = se.name GROUP BY st.statecode) AS n;
+
+/*gives all states with their number of committee charimans*/
+SELECT st.statecode, COUNT(*) as cc_count FROM committees cm, states st, senators se
+WHERE se.statecode = st.statecode AND cm.chairman = se.name GROUP BY st.statecode ORDER BY cc_count DESC;
 
 /*******************************************************************************
 Q10 - Return the statecode of the state(s) that are not the home of any
