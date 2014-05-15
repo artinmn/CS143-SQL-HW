@@ -124,8 +124,8 @@ committee chairmen
 
 /* Put your SQL for Q9 here */
 
-SELECT t FROM (SELECT st.statecode as t, count(*) as num FROM committees cm, states st, senators se
-WHERE se.statecode = st.statecode AND cm.chairman = se.name) as m;
+SELECT st.statecode, COUNT(*) as sc_count FROM committees cm, states st, senators se
+WHERE se.statecode = st.statecode AND cm.chairman = se.name GROUP BY st.statecode ORDER BY sc_count DESC;
 
 /*******************************************************************************
 Q10 - Return the statecode of the state(s) that are not the home of any
@@ -133,6 +133,14 @@ committee chairmen
 *******************************************************************************/
 
 /* Put your SQL for Q10 here */
+
+SELECT DISTINCT se.statecode
+FROM senators se
+WHERE se.statecode 
+NOT IN (SELECT
+DISTINCT se.statecode
+FROM senators se, committees co
+WHERE se.name = co.chairman);
 
 /*******************************************************************************
 Q11 Find all subcommittes whose chairman is the same as the chairman of its
